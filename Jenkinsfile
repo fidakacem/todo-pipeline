@@ -17,7 +17,9 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                bat 'npm test || echo "Tests failed but continuing..."'
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    bat 'npm test'
+                }
             }
         }
 
