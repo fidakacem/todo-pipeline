@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/wiem-kb/exam.git'
+                git 'https://github.com/fidakacem/todo-pipeline.git'
             }
         }
 
