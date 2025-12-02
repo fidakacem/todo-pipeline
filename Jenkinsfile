@@ -5,7 +5,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/fidakacem/todo-pipeline.git'
+                checkout scm
             }
         }
 
@@ -15,15 +15,13 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Tests') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    bat 'npm test'
-                }
+                bat 'npm test'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker') {
             steps {
                 bat 'docker build -t todo-app .'
             }

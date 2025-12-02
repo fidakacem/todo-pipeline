@@ -1,6 +1,8 @@
 const db = require('../../src/persistence/sqlite');
 const fs = require('fs');
-const location = process.env.SQLITE_DB_LOCATION || '/etc/todos/todo.db';
+const path = require('path');
+
+const location = process.env.SQLITE_DB_LOCATION || 'C:/etc/todos/todo.db';
 
 const ITEM = {
     id: '7aef3d7c-d301-4846-8358-2a91ec9d6be3',
@@ -8,10 +10,32 @@ const ITEM = {
     completed: false,
 };
 
-beforeEach(() => {
+async function deleteDbFile() {
     if (fs.existsSync(location)) {
-        fs.unlinkSync(location);
+        try {
+            fs.unlinkSync(location);
+        } catch (err) {
+            if (err.code === 'EBUSY') {
+                console.log('File locked, retrying delete...');
+                await new Promise(res => setTimeout(res, 250));
+                fs.unlinkSync(location);
+            } else {
+                throw err;
+            }
+        }
     }
+}
+
+beforeEach(async () => {
+    // fermer la base pour Windows
+    try { await db.close(); } catch (e) {}
+
+    // supprimer l'ancienne DB
+    await deleteDbFile();
+});
+
+afterEach(async () => {
+    try { await db.close(); } catch (e) {}
 });
 
 test('it initializes correctly', async () => {
@@ -20,7 +44,6 @@ test('it initializes correctly', async () => {
 
 test('it can store and retrieve items', async () => {
     await db.init();
-
     await db.storeItem(ITEM);
 
     const items = await db.getItems();
@@ -49,7 +72,6 @@ test('it can update an existing item', async () => {
 test('it can remove an existing item', async () => {
     await db.init();
     await db.storeItem(ITEM);
-
     await db.removeItem(ITEM.id);
 
     const items = await db.getItems();
