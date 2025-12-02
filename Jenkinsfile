@@ -2,10 +2,9 @@ pipeline {
     agent any
 
     stages {
-
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/wiem-kb/exam.git'
+                git branch: 'main', url: 'https://github.com/fidakacem/todo-pipeline.git'
             }
         }
 
