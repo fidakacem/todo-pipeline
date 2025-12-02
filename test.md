@@ -49,9 +49,34 @@ services:
     docker compose up --build
 
 4. Jenkinsfile
-    * Pipeline CI/CD avec :
-        Checkout
-        Installation dépendances
-        Tests
-        Build Docker
-        Compatible Windows
+    * Pipeline CI/CD avec :Checkout/Installation/dépendances/Tests/Build Docker/Compatible Windows
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
+                bat 'npm install'
+            }
+        }
+
+        stage('Tests') {
+            steps {
+                bat 'npm test'
+            }
+        }
+
+        stage('Build Docker') {
+            steps {
+                bat 'docker build -t todo-app .'
+            }
+        }
+    }
+}
