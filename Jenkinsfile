@@ -1,12 +1,12 @@
 pipeline {
     agent any
 
-    stages {
         stage('Checkout') {
-            steps {
-                git 'https://github.com/fidakacem/todo-pipeline.git'
-            }
+        steps {
+            git branch: 'main', url: 'https://github.com/fidakacem/todo-pipeline.git'
         }
+        }
+
 
         stage('Install dependencies') {
             steps {
